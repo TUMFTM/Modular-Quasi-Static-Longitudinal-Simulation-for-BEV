@@ -1,3 +1,7 @@
+------- An Open-Source Modular Quasi-Static Longitudinal Simulation for Full Electric Vehicles ------
+Authors: Adrian König, Lorenzo Nicoletti, Korbinian Moller
+
+
 This is the readme file for MATLAB longitudinal dynamics simulation. This simulation calculates the motor torque, motor power and energy consumption within a given driving cycle based on the given input parameters. 
 
 To start the simulation you only have to call the function main.m. This function coordinates all further subfunctions. In the first function (initialize_inputparameters_xxx) different preset vehicles can be selected. These can easily be found with the tab key (press behind the last underscore). Furthermore, all parameters can be changed in the options. These are explained separately in the function. 
