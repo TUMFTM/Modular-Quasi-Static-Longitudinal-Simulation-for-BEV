@@ -1,9 +1,9 @@
-function [vehicle,Parameters] = initialize_inputparameters_leaf13(vehicle)
-%% Description: '2013 Nissan Leaf SV'
+function [vehicle,Parameters] = initialize_inputparameters_nioes8(vehicle)
+%% Description: Nio ES8 2019
 %This function initializes the vehicle struct. This is needed to avoid errors in the next steps.
 
-%Author:    Lorenzo Nicoletti, FTM, TUM 
-%date:      03.06.2020
+%Author:    Korbinian Moller, FTM, TUM 
+%date:      21.10.2020
 %% Outputs:
 %veicle struct, filled with the Inputs
 %parameters struct, filled with the constant values
@@ -27,27 +27,25 @@ function [vehicle,Parameters] = initialize_inputparameters_leaf13(vehicle)
 
 %% 1) Section where the user can assign the Inputparameters
 %%----------------------------------------------------Vehicle Inputs----------------------------------------------------
-vehicle.Input.topology                  =   'GM_X';        %vehicle topology. See functions initialize powertrain
+vehicle.Input.topology                  =   'GM_GM';        %vehicle topology. See functions initialize powertrain
 vehicle.Input.weight_extra_equipment    =   0;              %weight of the extra equipment
 vehicle.Input.vehicle_payload           =   0;              %payload of vehicle in kg
-vehicle.Input.number_passengers         =   5;              %Number of passengers
-vehicle.Input.vehicle_empty_weight      =   1497-75;           %empty weight netto in kg (no driver)
-vehicle.Input.vehicle_sim_cons_weight   =   NaN;            %vehicle weight for energy consumption simulation (optional, otherwise NaN)
-vehicle.Input.r_tire                    =   316;            %static tire radius in mm 
-vehicle.Input.w_tire                    =   205;            %tire width in mm, (Optional, needed for e_i calculation)
-vehicle.Input.vehicle_width             =   1770;           %vehicle width in mm
-vehicle.Input.vehicle_height            =   1550;           %vehicle height in mm
-vehicle.Input.wheelbase                 =   2700;           %wheelbase in mm
+vehicle.Input.number_passengers         =   7;              %Number of passengers
+vehicle.Input.vehicle_empty_weight      =   2460-75;        %empty weight netto in kg (no driver)
+vehicle.Input.vehicle_sim_cons_weight   =   NaN;            %vehicle weight for energy consumption sim, optional
+vehicle.Input.r_tire                    =   381.55;            %static tire radius in mm 
+vehicle.Input.w_tire                    =   255;            %tire width in mm, (Optional, needed for e_i calculation)
+vehicle.Input.vehicle_width             =   1962;           %vehicle width in mm
+vehicle.Input.vehicle_height            =   1756;           %vehicle height in mm
+vehicle.Input.wheelbase                 =   3010;           %wheelbase in mm
 vehicle.Input.ground_clearance          =   'flatfloor';    %ground clearance (more than 200mm ==> highfloor, otherwise flatfloor)                 
-vehicle.Input.driving_cycle             =   'USA_FTP_72';         %driving cycle (cycle are in folder 04_Drive_Cycle)
-vehicle.Input.power_auxiliaries         =    0.28;               %power of auxiliary users in kW. (optional, otherwise NaN)
+vehicle.Input.driving_cycle             =   'NEFZ';         %driving cycle (cycle are in folder 04_Drive_Cycle)
+vehicle.Input.power_auxiliaries         =    NaN;               %power of auxiliary users in kW. (optional, otherwise NaN)
 
 %Obligatory Inputs: Max Velocity, Machine Type and Rotational Level (Latter defines the motor characteristics, which will be loaded for futher scaling)
-vehicle.Input.max_speed                 =   144;            %maximum velocity in km/h
-vehicle.Input.machine_type_f            =   'PSM';          %machine type front 'PSM' or 'ASM'
-vehicle.Input.machine_type_r            =   'PSM';          %machine type rear 'PSM' or 'ASM'
-vehicle.Input.rotation_level_f          =   'low';          %rotational level machine front low, medium, high
-vehicle.Input.rotation_level_r          =   'low';          %rotational level machine front low, medium, high
+vehicle.Input.max_speed                 =   200;            %maximum velocity in km/h
+vehicle.Input.machine_type_f            =   'ASM';          %machine type front 'PSM' or 'ASM'
+vehicle.Input.machine_type_r            =   'ASM';          %machine type rear 'PSM' or 'ASM'
 
 %%-----------------------------------------------------Motor Inputs-----------------------------------------------------
 %At least n_max or i_gearbox have to be assigned!! The non assigned values can be set to NaN
@@ -55,15 +53,15 @@ vehicle.Input.rotation_level_r          =   'low';          %rotational level ma
 vehicle.Input.n_max_Mot_f               =   NaN;      %max rotational speed of front machine in 1/min, optional
 vehicle.Input.n_max_Mot_r               =   NaN;      %max rotational speed of front machine in 1/min, optional
 
-vehicle.Input.i_gearbox_f               =   7.9377;          %gear ratio front - 8.1938
-vehicle.Input.i_gearbox_r               =   NaN;         %gear ratio rear
+vehicle.Input.i_gearbox_f               =   9.6;          %gear ratio front
+vehicle.Input.i_gearbox_r               =   9.6;         %gear ratio rear
 
-vehicle.Input.T_max_Mot_f               =  254;         %max torque of front machine in Nm
-vehicle.Input.T_max_Mot_r               =  NaN;         %max torque of rear machine in Nm
+vehicle.Input.T_max_Mot_f               =  420;         %max torque of front machine in Nm
+vehicle.Input.T_max_Mot_r               =  420;         %max torque of rear machine in Nm
 
 %Optional: If the given torque is not sufficient to reach this acceleration time, the code will scale the torque
 %In the case the user does not want to give a required acceleration time value, it can be set as NaN (see line underneath)
-vehicle.Input.acceleration_time_req     =   NaN;    %required acceleration time in s
+vehicle.Input.acceleration_time_req     =   4.4;    %required acceleration time in s
 
 %Motor characteristic inputs
 vehicle.Input.characteristic_forced = {NaN,NaN};  %select forced characteristic per axle, otherwise NaN, f.e. characteristic_forced = {'PSM_M270_n12000_0.2.mat',NaN};
@@ -76,7 +74,7 @@ vehicle.Input.weight_ratio = [1,1];               %select angular speed ratio we
 %If not assigned will be calculated or modeled with constant values (taken from Parameter struct)
 vehicle.Input.e_i                       =   NaN;            %e_i value (optional)
 vehicle.Input.c_r                       =   NaN;            %roll resistance coefficient, (optional)
-vehicle.Input.c_d                       =   NaN;            %air resistance coefficient, (optional)
+vehicle.Input.c_d                       =   0.29;            %air resistance coefficient, (optional)
 vehicle.Input.eta_gearbox_r             =   NaN;            %efficiency of rear gearbox, optional
 vehicle.Input.eta_gearbox_f             =   NaN;            %efficiency of front gearbox, optional
 
@@ -96,6 +94,7 @@ Parameters=struct;
 %looks like: '02_Characteristics_Diagrams'
 Parameters.LDS.char_path = '02_Characteristics_Diagrams'; %Path where engine characteristics are stored within the folder /lds_paumani/03_LDS_Hefele/XXXXX
 
+
 %%--------------------------------Parameters for calculation of vehicle resistance force--------------------------------
 Parameters.LDS.c_d                      =   0.258;      %drag coefficient in [-]. Source [1]
 Parameters.LDS.c_r                      =   0.009;      %roll resistance coefficient in [-]. Source [2]
@@ -103,13 +102,13 @@ Parameters.LDS.e_i                      =   1.08;       %fix e_i value (used onl
 Parameters.LDS.g                        =   9.81;       %gravitational acceleration in m/s^2
 Parameters.LDS.rho_L                    =   1.20;       %air density in kg/m^3
 Parameters.LDS.mue_max                  =   1.15;       %driving traction coefficient (wheel-asphalt) in [-]. Source [3]
-Parameters.LDS.correction_area          =   0.81;       %correction factor of cross sectional area (for calculation of air resistance) in [-]. Source [4]
+Parameters.LDS.correction_area          =   0.81;       %correction factor of cross sectional area (for calculation of air resistance) in [-]. Source [4] %0.81
 
 %%-------------------------------Parameters for calculation of gearbox and gearbox losses-------------------------------
 Parameters.LDS.i_differential           =   1;          %gear ratio of differential in [-]. Source [3]
-Parameters.LDS.eta_differential         =   0.985;      %efficiency of differential in [-]. Source [5]
-Parameters.LDS.eta_gearbox              =   0.98;       %efficiency of gearbox in [-]. Source [6]
-Parameters.LDS.correction_gearbox       =   0.86;       %correction factor for gear ratio (for electric vehicles) in [-]. Source [3]
+Parameters.LDS.eta_differential         =   0.97;      %efficiency of differential in [-]. Source [5]
+Parameters.LDS.eta_gearbox              =   0.97;       %efficiency of gearbox in [-]. Source [6]
+Parameters.LDS.correction_gearbox       =   0.9142;       %correction factor for gear ratio (for electric vehicles) in [-]. Source [3]
 
 %-------------------------------------------Parameters for calculation of e_i-------------------------------------------
 Parameters.LDS.m_wheel_P9               =   538.02;                         %factor P9 for calculating mass of wheels in kg m^2. Source [7]
@@ -118,7 +117,7 @@ Parameters.LDS.inertia.ASM              =   0.0555;                         %ine
 Parameters.LDS.inertia.PSM              =   0.0342;                         %inertia PSM + gearbox in kg m^2. Source [3]
 
 %----------------------------Parameters for efficiency calculation foe E-machine and battery----------------------------
-Parameters.LDS.eta_battery              =   1;                           %fix efficiency of battery in [-]. Source [8]
+Parameters.LDS.eta_battery              =   0.92;                              %fix efficiency of battery in [-]. Source [8] 0.92
 Parameters.LDS.eta_power_electronics    =   0.95;                           %efficiency of power electronics in [-]. Source [6]
 Parameters.LDS.overload_factor.ASM      =   3;                              %overload factor ASM in [-]. Source [9]
 Parameters.LDS.overload_factor.PSM      =   2;                              %overload factor PSM in [-]. Source [9]
@@ -136,7 +135,7 @@ Parameters.LDS.slope_3.flatfloor        =   0.12;                           %slo
 Parameters.LDS.slope_3.highfloor        =   0.12;                           %slope 3 for highfloor vehicles for max weight + trailer mass. Source [12]
 
 %%----------------------------------------Parameters for the simulation settings----------------------------------------
-Parameters.LDS.max_diff_to_acc          =   0.1;                            %tolerance of acceleration time in s
+Parameters.LDS.max_diff_to_acc          =   0.05;                            %tolerance of acceleration time in s
 Parameters.LDS.max_diff_to_max_speed    =   2;                              %tolerance of actual speed to max speed in km/h
 Parameters.LDS.t_sim                    =   25;                             %maximum acceleration simulation time in s
 Parameters.LDS.v_max_sim                =   100;                            %max speed in acceleration simulation in km/h
@@ -145,6 +144,8 @@ Parameters.LDS.delta_t_con              =   0.1;                            %ste
 Parameters.LDS.axle_load_front          =   0.5;                                %axis load distribution on front axis 
 Parameters.LDS.axle_load_rear           =   1-Parameters.LDS.axle_load_front;   %axis load distribution on rear axis 
 Parameters.LDS.slope_angle_sim_acc      =   0;                              %Slope angle for acceleration simulation in °
+Parameters.LDS.torque_optimizer         =   NaN;                            %Torque optimizer if only one engine is overloaded - on/off (1/NaN)
 
 end
+
 
