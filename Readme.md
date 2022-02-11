@@ -1,6 +1,6 @@
 ------- An Open-Source Modular Quasi-Static Longitudinal Simulation for Full Electric Vehicles ------
 Authors: Adrian König, Lorenzo Nicoletti, Korbinian Moller
-
+Link: https://ieeexplore.ieee.org/document/9242981
 
 This is the readme file for MATLAB longitudinal dynamics simulation. This simulation calculates the motor torque, motor power and energy consumption within a given driving cycle based on the given input parameters. 
 
