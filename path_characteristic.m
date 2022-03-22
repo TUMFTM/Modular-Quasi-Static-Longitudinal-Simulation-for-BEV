@@ -1,9 +1,18 @@
 function [] = path_characteristic()
-%% Description
-%This function is only a dummy function to find the main path if the simulation -> with this path the path to characteristics is created
-%DO NOT DELETE
-
-disp('Danke, dass du mich aufgerufen hast. Ich kann nichts, aber ich bin wichtig, um den richtigen Pfad zu den Kennfeldern zu generieren. Einen schönen Tag noch!')
-
+% Designed by: Lorenzo Nicoletti (FTM, Technical University of Munich), Korbinian Moller, Ruben Hefele
+%-------------
+% Created on: 06.01.2022
+% ------------
+% Version: Matlab2020b
+%-------------
+% Description: %This function is only a dummy function to find the path of the motor characteristics
+%               DO NOT DELETE AND DO NOT MOVE
+% ------------
+% Input: v: The vehicle structure -> Stores the calculated component volumes and masses
+%        Par: The Parameters structure -> Stores the constant values and regressions for volume and mass models
+% ------------
+% Output: The vehicle struct with filled MOTOR and GEARBOX fields, according to the choosen topology
+% ------------
+disp('I am just a dummy function, do not delete me please');
 end
 

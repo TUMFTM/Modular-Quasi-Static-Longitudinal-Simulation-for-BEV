@@ -1,0 +1,6 @@
+The Efficiency diagrams contained in this repository
+have been calculated with the tool of Svenja Kalt. More 
+Information to the tool can be found at the following sources:
+[1] S. Kalt, J. Erhard and M. Lienkamp, „Electric Machine Design Tool for Permanent Magnet
+    Synchronous Machines and Induction Machines,“ Machines, vol. 8, no. 1, p. 15, 2020,
+    DOI: 10.3390/machines8010015.

@@ -1,42 +1,43 @@
-function [traction_limit] = calc_traction_lim(vehLDS, ParLDS, F_L , alpha)
-%% Description:
-%this function determines the max. acceleration due to the traction limit
-
-% Author:   Lorenzo Nicoletti,Ruben Hefele, FTM, TUM
-% Date:     26.12.19
-%% Inputs:
-%   vehLDS:    struct with the vehicle parameters
-%   ParLDS:    struct with fix parameters
-%   F_L:       air resistance
-%   alpha:     slope angle
-%% Outputs:
-%  traction_limit: vector containing the max. acceleration at each timestep of the acceleration sim
-%% Sources: 
-%Haken - Grundlagen der Kraftfahrzeugtechnik
+function [traction_limit] = calc_traction_lim(vehicle, Par, F_L , alpha)
+% Designed by: Lorenzo Nicoletti (FTM, Technical University of Munich), Ruben Hefele
+%-------------
+% Created on: 06.01.2022
+% ------------
+% Version: Matlab2020b
+%-------------
+% Description: This function determines the max. acceleration due to the traction limit
+% ------------
+% Sources: More information regarding the implementation of the LDS functions is available at:
+%          [1] R. Hefele, „Implementierung einer MATLAB Längsdynamiksimulation für Elektrofahrzeuge,“Semester thesis, Institute of Automotive Technology, Technical University of Munich, Munich, 2019.
+%          [2] L. v. Hacken, "Grundlagen der Kraftfahrzeugtechnik", ISBN: 9783446426047, 2011
+% ------------
+% Input: vehicle: The vehicle structure -> Stores the calculated component volumes and masses
+%        Par: The Parameters structure -> Stores the constant values and regressions for volume and mass models
+%        F_L: Air resistance
+%        alpha: Slope angle
+% ------------
+% Output: traction_limit: vector containing the max. acceleration at each timestep of the acceleration sim
+% ------------
 %% Implementation
-
 %Initialize variables to make the equation shorter:
-m=vehLDS.weights.vehicle_empty_weight_EU;   %Vehicle mass in kg (empty weight + driver)
-g=ParLDS.g;                                 %gravitational acceleration in m/s^2
-mu=ParLDS.mue_max;                          %driving traction coefficient
-h_COG=vehLDS.parameters.height_COG;         %height COG in mm
-wb=vehLDS.parameters.wheelbase;             %wheelbase in mm
-c_r=vehLDS.parameters.c_r;                  %roll resistance coefficient
-load_f=ParLDS.axle_load_front;               %load distribution front in %
-load_r=ParLDS.axle_load_rear;                %load distribution rear in %
+m     = vehicle.weights.vehicle_empty_weight_EU; %Vehicle mass in kg (empty weight + driver)
+g     = Par.LDS.g;                               %gravitational acceleration in m/s^2
+mu    = Par.LDS.mue_max;                         %driving traction coefficient
+h_COG = vehicle.parameters.height_COG;           %height COG in mm
+wb    = vehicle.parameters.wheelbase;            %wheelbase in mm
+c_r   = vehicle.parameters.c_r;                  %roll resistance coefficient
 
-% calculate traction limit for the different drive types:
-if strcmp(vehLDS.settings.drive,'rear_wheel')
-    
-    traction_limit = (g*(mu*(load_f*cosd(alpha)+(h_COG/wb)*sind(alpha))-c_r*(load_r*cosd(alpha)-(h_COG/wb)*sind(alpha))-sind(alpha))-(F_L/m))/1-(h_COG/wb)*(mu+c_r); 
+%Calculate traction limit for the different drive types. Fromula for traction_limit taken from [2]
+if strcmp(vehicle.settings.drive,'rear_wheel')
+    load_f = Par.masses.loads.axle_load_front.RWD / 100;
+    load_r = 1 - load_f;
+    traction_limit = (g*(mu*(load_f*cosd(alpha)+(h_COG/wb)*sind(alpha))-c_r*(load_r*cosd(alpha)-(h_COG/wb)*sind(alpha))-sind(alpha))-(F_L/m))/(1-(h_COG/wb)*(mu+c_r)); 
 
-elseif strcmp(vehLDS.settings.drive,'front_wheel')
-    
-    traction_limit = (g*(mu*(load_r*cosd(alpha)-(h_COG/wb)*sind(alpha))-c_r*(load_f*cosd(alpha)+(h_COG/wb)*sind(alpha))-sind(alpha))-(F_L/m))/1+(h_COG/wb)*(mu+c_r);
+elseif strcmp(vehicle.settings.drive,'front_wheel')
+    load_f = Par.masses.loads.axle_load_front.FWD / 100;
+    load_r = 1 - load_f;
+    traction_limit = (g*(mu*(load_r*cosd(alpha)-(h_COG/wb)*sind(alpha))-c_r*(load_f*cosd(alpha)+(h_COG/wb)*sind(alpha))-sind(alpha))-(F_L/m))/(1+(h_COG/wb)*(mu+c_r));
 
-elseif strcmp(vehLDS.settings.drive,'all_wheel')
-    
+elseif strcmp(vehicle.settings.drive,'all_wheel')
     traction_limit = g*(mu*cosd(alpha)-sind(alpha))-(F_L/m); 
-
 end
-

@@ -1,20 +1,26 @@
 function  [veh]=check_overload(veh,Par,T_mot,n_mot,ax_id)
-%% Description:
-%This function identifies the timesteps, where the motor is in overload.
-%This function also calculates the maximum time, where the motor is in
-%overload and compares it with the motor overload duration.
-
-%Authors: Lorenzo Nicoletti
-%date:   31.12.2019
-
-%% Inputs:
-%veh: vehicle structure
-%Par: parameter structure
-%T_mot: Torque at the motor (in Nm)
-%n_mot: rotational speeed (in 1/min) at the motor
-%ax_id: Axle identifier (1 for front and 2 for rear)
-%% Outputs:
-%vehicle struct with assigned errors, in case overload time is exceeded.
+% Designed by: Lorenzo Nicoletti (FTM, Technical University of Munich), Korbinian Moller
+%-------------
+% Created on: 06.01.2022
+% ------------
+% Version: Matlab2020b
+%-------------
+% Description: This function identifies the timesteps, where the motor is in overload.
+%              This function also calculates the maximum time, where the motor is in
+%              overload and compares it with the motor overload duration.
+% ------------
+% Sources: More information regarding the implementation of the LDS functions is available at:
+%          [1] K. Moller, „Validierung einer MATLAB Längsdynamiksimulation für die Auslegung von Elektrofahrzeugen,“ Bachelor thesis, Institute of Automotive Technology, Technical University of Munich, Munich, 2020. 
+%          [2] K. Moller, „Antriebsstrangmodellierung zur Optimierung autonomer Elektrofahrzeuge,“Semester thesis, Institute of Automotive Technology, Technical University of Munich, Munich, 2021.
+% ------------
+% Input: veh: vehicle structure
+%        Par: parameter structure
+%        T_mot: Torque at the motor (in Nm)
+%        n_mot: rotational speeed (in 1/min) at the motor
+%        ax_id: Axle identifier (1 for front and 2 for rear)
+% ------------
+% Output: vehicle struct with assigned errors, in case overload time is exceeded.
+% ------------
 %% Implementation
 %1) Calculate the highest overload duration
 %2) Create the vector to plot the  overload duration
@@ -23,10 +29,10 @@ function  [veh]=check_overload(veh,Par,T_mot,n_mot,ax_id)
 %% 1) Calculate the highest overload duration 
 %Assign overload factor and duration from Par
 overload_factor     = Par.LDS.overload_factor.(veh.LDS.MOTOR{ax_id}.type); 
-overload_duration     = Par.LDS.overload_duration.(veh.LDS.MOTOR{ax_id}.type);
+overload_duration   = Par.LDS.overload_duration.(veh.LDS.MOTOR{ax_id}.type);
 
 %Max amount of timestep where the motor can be in overload
-max_timesteps    = overload_duration/veh.LDS.sim_cons.delta_t; 
+max_timesteps       = overload_duration/veh.LDS.sim_cons.delta_t; 
 
 %Interpolate to find the characteristic line of the motor when not overloaded
 F = griddedInterpolant(veh.LDS.MOTOR{ax_id}.characteristic(:,2),veh.LDS.MOTOR{ax_id}.characteristic(:,1)/overload_factor,'linear','none');
@@ -59,11 +65,13 @@ max_time=max(overload_seq(overload_id));
 
 if max_time>max_timesteps %Check if the motor does not exceed the allowed verload duration
     
+    % overload Vec is assigned, needed in clear_struct
+    overload_vec = NaN;
     %The motor has been in overload for an amount of time, which is higher than the overload duration
     if ax_id == 1
-    veh.LDS=errorlog(veh.LDS,'The motor at the front axle is in overload for an amount of time, which is higher than the permitted overload duration');
+        veh.LDS=errorlog(veh.LDS,'The motor at the front axle is in overload for an amount of time, which is higher than the permitted overload duration');
     else
-    veh.LDS=errorlog(veh.LDS,'The motor at the rear axle is in overload for an amount of time, which is higher than the permitted overload duration');    
+        veh.LDS=errorlog(veh.LDS,'The motor at the rear axle is in overload for an amount of time, which is higher than the permitted overload duration');    
     end
     
 else %Check more precisely that the motor does not exceed overload point, see explanation section 2)
@@ -91,13 +99,10 @@ for ii=overload_id
     if overload_is-overload_seq(ii+1)>0
 
         overload_vec=[overload_vec;ones(overload_seq(ii+1),1)*(-1)];
-
     else
 
         overload_vec=[overload_vec;(-1)*ones(overload_is,1);zeros(overload_seq(ii+1)-overload_is,1)];
-
-    end
-    
+    end    
 end
 
 %Cumsum of the overload vec
@@ -110,15 +115,15 @@ if max_time>max_timesteps %Check if the motor does not exceed the allowed verloa
     
     %The motor has been in overload for an amount of time, which is higher than the overload duration
     if ax_id == 1
-    veh.LDS=errorlog(veh.LDS,'The motor at the front axle is in overload for an amount of time, which is higher than the permitted overload duration');
+        veh.LDS=errorlog(veh.LDS,'The motor at the front axle is in overload for an amount of time, which is higher than the permitted overload duration');
     else
-    veh.LDS=errorlog(veh.LDS,'The motor at the rear axle is in overload for an amount of time, which is higher than the permitted overload duration');    
+        veh.LDS=errorlog(veh.LDS,'The motor at the rear axle is in overload for an amount of time, which is higher than the permitted overload duration');    
     end
 
 end
 
+end
 %% 3) Assign Outputs:
-
 if ax_id==1
     str_time='max_overload_time_in_cycle_mot_f';
     str_vec ='overload_vector_mot_f';
@@ -127,8 +132,6 @@ else
     str_vec ='overload_vector_mot_r';
 end
 
-veh.LDS.sim_cons.(str_time)=max_time;       %in s
-veh.LDS.sim_cons.(str_vec)=overload_vec;    %in [-]
-   
+veh.LDS.sim_cons.(str_time)= max_time;       %in s
+veh.LDS.sim_cons.(str_vec) = overload_vec;   %in [-]
 end
-

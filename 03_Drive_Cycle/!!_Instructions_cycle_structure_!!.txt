@@ -1,0 +1,12 @@
+Structure of the saved cycles:
+
+The cycles variables contain three elements:
+
+t: The cycle time in s
+v: The cycle speed in km/h
+S: The slope (if present) in %
+
+Ths slope expresses the inclination/ramp angle 
+at each timestep of the cycle. In most cases it 
+is a vector of zeros, since conventional cycles 
+usually do not have any slope.

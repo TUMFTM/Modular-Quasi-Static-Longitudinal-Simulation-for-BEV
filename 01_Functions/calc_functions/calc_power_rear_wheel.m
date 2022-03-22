@@ -1,75 +1,72 @@
-function [veh] = calc_power_rear_wheel (veh, Par)
-%% Description:
-%this function calculates the required power at the battery for rear_wheels
-
-%Authors: Lorenzo Nicoletti, Ruben Hefele, FTM, TUM
-%date:   18.12.2019
-
-%% Inputs:
-%P_wheel - power at wheels in W
-%vehicle struct
-%parameters struct
-%% Outputs:
-%Operating point of motors and their power, as well as the battery power
-%% Sources:
-%Christian Angerer 2018 - consumption function
+function [vehicle] = calc_power_rear_wheel (vehicle, Par)
+% Designed by: Lorenzo Nicoletti (FTM, Technical University of Munich), Korbinian Moller, Ruben Hefele
+%-------------
+% Created on: 06.01.2022
+% ------------
+% Version: Matlab2020b
+%-------------
+% Description: This function calculates the required power at the battery for rear wheel drives
+% ------------
+% Sources: More information regarding the implementation of the LDS functions is available at:
+%          [1] K. Moller, „Validierung einer MATLAB Längsdynamiksimulation für die Auslegung von Elektrofahrzeugen,“ Bachelor thesis, Institute of Automotive Technology, Technical University of Munich, Munich, 2020. 
+%          [2] K. Moller, „Antriebsstrangmodellierung zur Optimierung autonomer Elektrofahrzeuge,“Semester thesis, Institute of Automotive Technology, Technical University of Munich, Munich, 2021.
+% ------------
+% Input: veh: vehicle structure
+%        Par: parameter structure
+% ------------
+% Output: Operating point of motors and their power, as well as the battery power
+% ------------
 %% Implementation
 %1) Calculate torque
 %2) Calculate eta matrix for the motor
 %3) Check that the motor does not leave the allowed overload time
 %4) Assign Outputs
 
-%% 1) Calculate torque
-%Torque of motor over cycle in Nm
-%T_mot_r=veh.LDS.sim_cons.T_wheels/(veh.LDS.MOTOR{2}.quantity*veh.LDS.GEARBOX{2}.i_gearbox*veh.LDS.GEARBOX{2}.eta); %wrong
-T_mot_r = veh.LDS.sim_cons.T_wheels./(veh.LDS.MOTOR{2}.quantity.*veh.LDS.GEARBOX{2}.i_gearbox.*(veh.LDS.GEARBOX{2}.eta).^sign(veh.LDS.sim_cons.T_wheels));
+%% 1) Calculate torque    
+% assign axle variable 
+axle = 2;
 
-%Rotational speed of motor over cycle in 1/min  
-n_mot_r= veh.LDS.sim_cons.n_wheels.*veh.LDS.GEARBOX{2}.i_gearbox;                                                                      
+%Rotational speed of motor over cycle in 1/min 
+n_mot = vehicle.LDS.sim_cons.n_wheels.*vehicle.LDS.GEARBOX{axle}.i_gearbox;  
+
+%Find eta of gearbox
+eta_gear = vehicle.LDS.GEARBOX{axle}.eta;
+
+%calculate current operating point torque of motor over cycle in Nm
+T_mot = vehicle.LDS.sim_cons.T_wheels./(vehicle.LDS.MOTOR{axle}.quantity.*vehicle.LDS.GEARBOX{axle}.i_gearbox.*eta_gear.^sign(vehicle.LDS.sim_cons.T_wheels));
+
+% calculate mechanical engine power
+P_mot = (vehicle.LDS.sim_cons.P_wheels./(vehicle.LDS.MOTOR{axle}.quantity*(eta_gear).^sign(vehicle.LDS.sim_cons.P_wheels)));
 
 %% 2) Calculate eta matrix for the motor
-
 %create grid
-[xd,yd]=ndgrid(veh.LDS.MOTOR{2}.diagram.n_scaled,veh.LDS.MOTOR{2}.diagram.T_scaled);
+[xd,yd] = ndgrid(vehicle.LDS.MOTOR{axle}.diagram.n_scaled,vehicle.LDS.MOTOR{axle}.diagram.T_scaled);
 
 %create interpolation function
-F=griddedInterpolant(xd,yd,veh.LDS.MOTOR{2}.diagram.etages','linear','none');
+F = griddedInterpolant(xd,yd,vehicle.LDS.MOTOR{axle}.diagram.etages','linear','none');
 
-%find current eta (efficiency of rear motor)
-eta_mot_r=F(abs(n_mot_r),abs(T_mot_r));    
+%find current eta (efficiency of front motor)
+eta_mot = F(abs(n_mot),abs(T_mot));
 
-%force gear if required
-gear_forced = NaN;
-
-%find best gear combination
-[T_mot_r_opt,n_mot_r_opt,eta_mot_r_opt,P_el_mot_r_opt, gear,gear_distr] = Det_gear(T_mot_r,n_mot_r,eta_mot_r,gear_forced,veh.LDS.GEARBOX{2}.num_gears);
-
+P_el_mot = T_mot .* n_mot * 2 * pi./(60 * (eta_mot).^sign(T_mot));
 
 %% 3) Check that the motor does not leave the allowed overload time
 %Check overload for motor/motors on the front axle
-[veh]=check_overload(veh,Par,T_mot_r_opt,n_mot_r_opt,2);
+[vehicle]=check_overload(vehicle,Par,T_mot,n_mot,axle);
 
 %% 4) Assign Outputs
-%Operating point of motor/motors for each gear
-veh.LDS.sim_cons.T_mot_r_gear=T_mot_r;       %[Nm]
-veh.LDS.sim_cons.n_mot_r_gear=n_mot_r;       %[1/min]
-veh.LDS.sim_cons.eta_mot_r_gear=eta_mot_r;   %[-]        
-%Best operating point
-veh.LDS.sim_cons.T_mot_r=T_mot_r_opt;       %[Nm]
-veh.LDS.sim_cons.n_mot_r=n_mot_r_opt;       %[1/min]
-veh.LDS.sim_cons.eta_mot_r=eta_mot_r_opt;   %[-]    
-
+% operating points
+vehicle.LDS.sim_cons.T_mot_r = T_mot;       %[Nm]
+vehicle.LDS.sim_cons.n_mot_r = n_mot;       %[1/min]
+vehicle.LDS.sim_cons.eta_mot_r = eta_mot;   %[-]    
 
 %Mechanical and electrical power of each machine, as well as battery power. All powers in W:
-%P_mech
-veh.LDS.sim_cons.P_mech_mot_r_gears=(veh.LDS.sim_cons.P_wheels./(veh.LDS.MOTOR{2}.quantity*(veh.LDS.GEARBOX{2}.eta).^sign(veh.LDS.sim_cons.P_wheels)));
-%P_el
-veh.LDS.sim_cons.P_el_mot_r_gears = veh.LDS.sim_cons.P_mech_mot_r_gears./(veh.LDS.sim_cons.eta_mot_r_gear).^sign(veh.LDS.sim_cons.P_mech_mot_r_gears);
-veh.LDS.sim_cons.P_el_mot_r = P_el_mot_r_opt;
+%P_mech (right side of engine - output)
+vehicle.LDS.sim_cons.P_mech_mot_r = P_mot;
+
+%P_el (left side of engine - input)
+vehicle.LDS.sim_cons.P_el_mot_r = P_el_mot;
+
 %P_batt
-veh.LDS.sim_cons.P_batt_gears=(veh.LDS.sim_cons.P_el_mot_r_gears*veh.LDS.MOTOR{2}.quantity)./((Par.LDS.eta_battery.*Par.LDS.eta_power_electronics).^sign(veh.LDS.sim_cons.P_el_mot_r_gears));            %power of battery in W
-veh.LDS.sim_cons.P_batt = (veh.LDS.sim_cons.P_el_mot_r*veh.LDS.MOTOR{2}.quantity)./((Par.LDS.eta_battery.*Par.LDS.eta_power_electronics).^sign(veh.LDS.sim_cons.P_el_mot_r));
-%gear
-veh.LDS.sim_cons.gear_r = gear;
-veh.LDS.sim_cons.gear_distribution_r = gear_distr;
+vehicle.LDS.sim_cons.P_batt = (vehicle.LDS.sim_cons.P_el_mot_r*vehicle.LDS.MOTOR{2}.quantity)./((Par.LDS.eta_battery.*Par.LDS.eta_power_electronics).^sign(vehicle.LDS.sim_cons.P_el_mot_r));
 end

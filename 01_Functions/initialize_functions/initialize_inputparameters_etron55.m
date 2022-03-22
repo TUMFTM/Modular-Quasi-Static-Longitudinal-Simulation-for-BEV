@@ -1,12 +1,33 @@
 function [vehicle,Parameters] = initialize_inputparameters_etron55(vehicle)
-%% Description: Audi e-tron 55 quattro 2019
-%This function initializes the vehicle struct. This is needed to avoid errors in the next steps.
-
-%Author:    Lorenzo Nicoletti, FTM, TUM 
-%date:      09.01.2019
-%% Outputs:
-%veicle struct, filled with the Inputs
-%parameters struct, filled with the constant values
+% Designed by: Lorenzo Nicoletti (FTM, Technical University of Munich), Korbinian Moller
+%-------------
+% Created on: 07.01.2022
+% ------------
+% Version: Matlab2020b
+%-------------
+% Description: VW-eGolf 2020
+%              This function initializes the vehicle struct. This is needed to avoid errors in the next steps.
+% ------------
+%Sources:
+%         [1] Vieweg Handbuch Kraftfahrzeugtechnik - Pischinger und Steiffert
+%         [2] M. Mitschke und H. Wallentowitz, Dynamik der Kraftfahrzeuge
+%         [3] Malkic - Aufbau eines Tools zur Berechnung von möglichen Motor-Getriebe-Kombinationen aus Konzeptanforderungen, Bachelorthesis, München, Lehrstuhl für Fahrzeugtechnik, TUM
+%         [4] Haken - Grundlagen der Kraftfahrzeugtechnik
+%         [5] Hoppert - Analytische und experimentelle Untersuchungen zum Wirkungsgradverhalten von Achsgetrieben
+%         [6] Tschöke - Die Elektrifizierung des Antriebsstrangs
+%         [7] Fuchs, J - Analyse der Wechselwirkungen und Entwicklungspotentiale in der Auslegung elektrifizierter Fahrzeugkonzepte. Technische Universität,München, Fakultät für Maschinenwesen, Lehrstuhl für Fahrzeugtechnik, TUM, Dissertation, 2014
+%         [8] Vaillant - Design Space Exploration zur multikriteriellen Optimierung elektrischer Sportwagenantriebsstränge: Variation von Topologie und Komponenteneigenschaften zur Steigerung
+%         [9] Matz - Beschreibung der Modellierungsart sowie der Modellierungsparameter von Elektrofahrzeugen in der Konzeptphase
+%         [10] Hefele - Hefele - Implementierung einer MATLAB Längsdynamiksimulation für Elektrofahrzeuge, Technische Universität,München, Fakultät für Maschinenwesen, Lehrstuhl für Fahrzeugtechnik, TUM, Semester thesis
+%         [11] https://www.gesetze-bayern.de/Content/Document/BayGaV-3
+%         [12] Kirchner - Leistungsübertragung in Fahrzeuggetrieben
+%         [13] Wissenschaftlicher Grundlagenbericht: Umweltbilanzen Elektromobilität
+% ------------
+% Input: v: The vehicle structure -> Stores the calculated component volumes and masses
+%        Par: The Parameters structure -> Stores the constant values and regressions for volume and mass models
+% ------------
+% Output: An initialized vehicle and Parameter struct, ready to be simulated in MainLDS
+% ------------
 %% Sources
 %[1] Vieweg Handbuch Kraftfahrzeugtechnik - Pischinger und Steiffert
 %[2] M. Mitschke und H. Wallentowitz, Dynamik der Kraftfahrzeuge
@@ -49,10 +70,6 @@ vehicle.Input.machine_type_r            =   'ASM';          %machine type rear '
 
 %%-----------------------------------------------------Motor Inputs-----------------------------------------------------
 %At least n_max or i_gearbox have to be assigned!! The non assigned values can be set to NaN
-
-vehicle.Input.n_max_Mot_f               =   NaN;      %max rotational speed of front machine in 1/min, optional
-vehicle.Input.n_max_Mot_r               =   NaN;      %max rotational speed of front machine in 1/min, optional
-
 vehicle.Input.i_gearbox_f               =   [9.204];          %gear ratio front
 vehicle.Input.i_gearbox_r               =   [9.08];         %gear ratio rear
 
@@ -87,12 +104,13 @@ vehicle.masses.vehicle_max_weight=vehicle.masses.vehicle_empty_weight_EU+vehicle
 vehicle.dimensions.CX=[];
 
 %% 2) Section where the user can change the fixed values
-
-Parameters=struct;
+Parameters= struct;
+Parameters.regr.LDS.height_COG.eq=@(measured_height_in_mm)-1491.6413+(1.2968*measured_height_in_mm);
+Parameters.masses.loads.axle_load_front.RWD = 55;                %Axle load distribution for RWD vehicles in percent
 
 %%----------------------------------------------------Characteristic Path----------------------------------------------------
 %looks like: '02_Characteristics_Diagrams'
-Parameters.LDS.char_path = '02_Characteristics_Diagrams'; %Path where engine characteristics are stored within the folder /lds_paumani/03_LDS_Hefele/XXXXX
+Parameters.LDS.char_path = '02_Characteristics_Diagrams'; %Path where engine characteristics are stored
 
 
 %%--------------------------------Parameters for calculation of vehicle resistance force--------------------------------
@@ -111,8 +129,6 @@ Parameters.LDS.eta_gearbox              =   0.97;       %efficiency of gearbox i
 Parameters.LDS.correction_gearbox       =   0.9142;       %correction factor for gear ratio (for electric vehicles) in [-]. Source [3]
 
 %-------------------------------------------Parameters for calculation of e_i-------------------------------------------
-Parameters.LDS.m_wheel_P9               =   538.02;                         %factor P9 for calculating mass of wheels in kg m^2. Source [7]
-Parameters.LDS.m_wheel_P10              =   1.87;                           %factor P10 for calculating mass of wheels in kg. Source [7]
 Parameters.LDS.inertia.ASM              =   0.0555;                         %inertia ASM + gearbox in kg m^2. Source [3]
 Parameters.LDS.inertia.PSM              =   0.0342;                         %inertia PSM + gearbox in kg m^2. Source [3]
 
@@ -123,16 +139,6 @@ Parameters.LDS.overload_factor.ASM      =   3;                              %ove
 Parameters.LDS.overload_factor.PSM      =   2;                              %overload factor PSM in [-]. Source [9]
 Parameters.LDS.overload_duration.ASM    =   30;                             %overload duration ASM in s. Source [9]
 Parameters.LDS.overload_duration.PSM    =   30;                             %overload duration PSM in s. Source [9]
-
-%%---------------------------------Parameters for calculation of the slope requirements---------------------------------
-Parameters.LDS.trailer_factor.highfloor =   0.98;                           %trailer factor for highfloor vehicles. Source [10]
-Parameters.LDS.trailer_factor.flatfloor =   0.83;                           %trailer factor for flatfloor vehicles. Source [10]
-Parameters.LDS.slope_1.flatfloor        =   0;                              %slope 1 for flatfloor vehicles for max weight. Additional slot for simulation of other slopes
-Parameters.LDS.slope_1.highfloor        =   0.25;                           %slope 1 for highfloor vehicles for max weight. Additional slot for simulation of other slopes
-Parameters.LDS.slope_2.flatfloor        =   0.15;                           %slope 2 for flatfloor vehicles for max weight. Source [11]
-Parameters.LDS.slope_2.highfloor        =   0.15;                           %slope 2 for highfloor vehicles for max weight. Source [11]
-Parameters.LDS.slope_3.flatfloor        =   0.12;                           %slope 3 for flatfloor vehicles for max weight + trailer mass. Source [12]
-Parameters.LDS.slope_3.highfloor        =   0.12;                           %slope 3 for highfloor vehicles for max weight + trailer mass. Source [12]
 
 %%----------------------------------------Parameters for the simulation settings----------------------------------------
 Parameters.LDS.max_diff_to_acc          =   0.05;                            %tolerance of acceleration time in s

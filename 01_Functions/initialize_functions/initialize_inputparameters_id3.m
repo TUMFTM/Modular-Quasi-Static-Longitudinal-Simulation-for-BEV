@@ -1,70 +1,73 @@
-function [vehicle,Parameters] = initialize_inputparameters_id3(vehicle)
-%% Description: VW ID3 2020 - no data available
-%This function initializes the vehicle struct. This is needed to avoid errors in the next steps.
-
-%Author:    Korbinian Moller, FTM, TUM 
-%date:      21.10.2020
-%% Outputs:
-%veicle struct, filled with the Inputs
-%parameters struct, filled with the constant values
-%% Sources
-%[1] Vieweg Handbuch Kraftfahrzeugtechnik - Pischinger und Steiffert
-%[2] M. Mitschke und H. Wallentowitz, Dynamik der Kraftfahrzeuge
-%[3] Malkic - Aufbau eines Tools zur Berechnung von möglichen Motor-Getriebe-Kombinationen aus Konzeptanforderungen, Bachelorthesis, München, Lehrstuhl für Fahrzeugtechnik, TUM
-%[4] Haken - Grundlagen der Kraftfahrzeugtechnik
-%[5] Hoppert - Analytische und experimentelle Untersuchungen zum Wirkungsgradverhalten von Achsgetrieben
-%[6] Tschöke - Die Elektrifizierung des Antriebsstrangs
-%[7] Fuchs, J - Analyse der Wechselwirkungen und Entwicklungspotentiale in der Auslegung elektrifizierter Fahrzeugkonzepte. Technische Universität,München, Fakultät für Maschinenwesen, Lehrstuhl für Fahrzeugtechnik, TUM, Dissertation, 2014
-%[8] Vaillant - Design Space Exploration zur multikriteriellen Optimierung elektrischer Sportwagenantriebsstränge: Variation von Topologie und Komponenteneigenschaften zur Steigerung
-%[9] Matz - Beschreibung der Modellierungsart sowie der Modellierungsparameter von Elektrofahrzeugen in der Konzeptphase
-%[10] Hefele - Hefele - Implementierung einer MATLAB Längsdynamiksimulation für Elektrofahrzeuge, Technische Universität,München, Fakultät für Maschinenwesen, Lehrstuhl für Fahrzeugtechnik, TUM, Semester thesis
-%[11] https://www.gesetze-bayern.de/Content/Document/BayGaV-3
-%[12] Kirchner - Leistungsübertragung in Fahrzeuggetrieben
-%[13] Wissenschaftlicher Grundlagenbericht: Umweltbilanzen Elektromobilität
+function [vehicle,Parameters] = initialize_inputparameters_ID3(vehicle)
+% Designed by: Lorenzo Nicoletti (FTM, Technical University of Munich), Korbinian Moller
+%-------------
+% Created on: 07.01.2022
+% ------------
+% Version: Matlab2020b
+%-------------
+% Description: VW ID3 2020
+%              This function initializes the vehicle struct. This is needed to avoid errors in the next steps.
+% ------------
+%Sources:
+%         [1] Vieweg Handbuch Kraftfahrzeugtechnik - Pischinger und Steiffert
+%         [2] M. Mitschke und H. Wallentowitz, Dynamik der Kraftfahrzeuge
+%         [3] Malkic - Aufbau eines Tools zur Berechnung von möglichen Motor-Getriebe-Kombinationen aus Konzeptanforderungen, Bachelorthesis, München, Lehrstuhl für Fahrzeugtechnik, TUM
+%         [4] Haken - Grundlagen der Kraftfahrzeugtechnik
+%         [5] Hoppert - Analytische und experimentelle Untersuchungen zum Wirkungsgradverhalten von Achsgetrieben
+%         [6] Tschöke - Die Elektrifizierung des Antriebsstrangs
+%         [7] Fuchs, J - Analyse der Wechselwirkungen und Entwicklungspotentiale in der Auslegung elektrifizierter Fahrzeugkonzepte. Technische Universität,München, Fakultät für Maschinenwesen, Lehrstuhl für Fahrzeugtechnik, TUM, Dissertation, 2014
+%         [8] Vaillant - Design Space Exploration zur multikriteriellen Optimierung elektrischer Sportwagenantriebsstränge: Variation von Topologie und Komponenteneigenschaften zur Steigerung
+%         [9] Matz - Beschreibung der Modellierungsart sowie der Modellierungsparameter von Elektrofahrzeugen in der Konzeptphase
+%         [10] Hefele - Hefele - Implementierung einer MATLAB Längsdynamiksimulation für Elektrofahrzeuge, Technische Universität,München, Fakultät für Maschinenwesen, Lehrstuhl für Fahrzeugtechnik, TUM, Semester thesis
+%         [11] https://www.gesetze-bayern.de/Content/Document/BayGaV-3
+%         [12] Kirchner - Leistungsübertragung in Fahrzeuggetrieben
+%         [13] Wissenschaftlicher Grundlagenbericht: Umweltbilanzen Elektromobilität
+% ------------
+% Input: v: The vehicle structure -> Stores the calculated component volumes and masses
+%        Par: The Parameters structure -> Stores the constant values and regressions for volume and mass models
+% ------------
+% Output: An initialized vehicle and Parameter struct, ready to be simulated in MainLDS
+% ------------
 %% Implementation:
 % 1) Section where the user can assign the Inputparameters
 % 2) Section where the user can change the fixed values
 
 %% 1) Section where the user can assign the Inputparameters
 %%----------------------------------------------------Vehicle Inputs----------------------------------------------------
-vehicle.Input.topology                  =   'GM_X';        %vehicle topology. See functions initialize powertrain
+vehicle.Input.topology                  =   'X_GM';        %vehicle topology. See functions initialize powertrain
 vehicle.Input.weight_extra_equipment    =   0;              %weight of the extra equipment
 vehicle.Input.vehicle_payload           =   0;              %payload of vehicle in kg
 vehicle.Input.number_passengers         =   5;              %Number of passengers
-vehicle.Input.vehicle_empty_weight      =   ;        %empty weight netto in kg (no driver)
+vehicle.Input.vehicle_empty_weight      =   1737;        %empty weight netto in kg (no driver)
 vehicle.Input.vehicle_sim_cons_weight   =   NaN;            %vehicle weight for energy consumption sim, optional
-vehicle.Input.r_tire                    =   ;            %static tire radius in mm 
-vehicle.Input.w_tire                    =   ;            %tire width in mm, (Optional, needed for e_i calculation)
-vehicle.Input.vehicle_width             =   ;           %vehicle width in mm
-vehicle.Input.vehicle_height            =   ;           %vehicle height in mm
-vehicle.Input.wheelbase                 =   ;           %wheelbase in mm
+vehicle.Input.r_tire                    =   693.7;            %static tire radius in mm 
+vehicle.Input.w_tire                    =   215;            %tire width in mm, (Optional, needed for e_i calculation)
+vehicle.Input.vehicle_width             =   1809;           %vehicle width in mm
+vehicle.Input.vehicle_height            =   1550;           %vehicle height in mm
+vehicle.Input.wheelbase                 =   2771;           %wheelbase in mm
 vehicle.Input.ground_clearance          =   'flatfloor';    %ground clearance (more than 200mm ==> highfloor, otherwise flatfloor)                 
 vehicle.Input.driving_cycle             =   'WLTP';         %driving cycle (cycle are in folder 04_Drive_Cycle)
 vehicle.Input.power_auxiliaries         =    NaN;               %power of auxiliary users in kW. (optional, otherwise NaN)
 
 %Obligatory Inputs: Max Velocity, Machine Type and Rotational Level (Latter defines the motor characteristics, which will be loaded for futher scaling)
-vehicle.Input.max_speed                 =   ;            %maximum velocity in km/h
+vehicle.Input.max_speed                 =   160;            %maximum velocity in km/h
 vehicle.Input.machine_type_f            =   'PSM';          %machine type front 'PSM' or 'ASM'
 vehicle.Input.machine_type_r            =   'PSM';          %machine type rear 'PSM' or 'ASM'
 
 %%-----------------------------------------------------Motor Inputs-----------------------------------------------------
 %At least n_max or i_gearbox have to be assigned!! The non assigned values can be set to NaN
+vehicle.Input.i_gearbox_f               =   NaN;          %gear ratio front
+vehicle.Input.i_gearbox_r               =   11.53;         %gear ratio rear
 
-vehicle.Input.n_max_Mot_f               =   NaN;      %max rotational speed of front machine in 1/min, optional
-vehicle.Input.n_max_Mot_r               =   NaN;      %max rotational speed of front machine in 1/min, optional
-
-vehicle.Input.i_gearbox_f               =   ;          %gear ratio front
-vehicle.Input.i_gearbox_r               =   NaN;         %gear ratio rear
-
-vehicle.Input.T_max_Mot_f               =  ;         %max torque of front machine in Nm
+vehicle.Input.T_max_Mot_f               =  NaN;         %max torque of front machine in Nm
 vehicle.Input.T_max_Mot_r               =  NaN;         %max torque of rear machine in Nm
 
 %Optional: If the given torque is not sufficient to reach this acceleration time, the code will scale the torque
 %In the case the user does not want to give a required acceleration time value, it can be set as NaN (see line underneath)
-vehicle.Input.acceleration_time_req     =   ;    %required acceleration time in s
+vehicle.Input.acceleration_time_req     =   7.3;    %required acceleration time in s
 
 %Motor characteristic inputs
-vehicle.Input.characteristic_forced = {NaN,NaN};  %select forced characteristic per axle, otherwise NaN, f.e. characteristic_forced = {'PSM_M270_n12000_0.2.mat',NaN};
+vehicle.Input.characteristic_forced = {NaN,'TeslaModel3_without_inverter.mat'};  %select forced characteristic per axle, otherwise NaN, f.e. characteristic_forced = {'PSM_M270_n12000_0.2.mat',NaN};
 vehicle.Input.ratio_req = [0.2,0.3];              %select required angular speed ratio per axle
 vehicle.Input.weight_T = [1,1];                   %select Torque weight factor per axle
 vehicle.Input.weight_n = [1,1];                   %select speed weight factor per axle
@@ -74,7 +77,7 @@ vehicle.Input.weight_ratio = [1,1];               %select angular speed ratio we
 %If not assigned will be calculated or modeled with constant values (taken from Parameter struct)
 vehicle.Input.e_i                       =   NaN;            %e_i value (optional)
 vehicle.Input.c_r                       =   NaN;            %roll resistance coefficient, (optional)
-vehicle.Input.c_d                       =   ;            %air resistance coefficient, (optional)
+vehicle.Input.c_d                       =   0.26;            %air resistance coefficient, (optional)
 vehicle.Input.eta_gearbox_r             =   NaN;            %efficiency of rear gearbox, optional
 vehicle.Input.eta_gearbox_f             =   NaN;            %efficiency of front gearbox, optional
 
@@ -87,13 +90,13 @@ vehicle.masses.vehicle_max_weight=vehicle.masses.vehicle_empty_weight_EU+vehicle
 vehicle.dimensions.CX=[];
 
 %% 2) Section where the user can change the fixed values
-
-Parameters=struct;
+Parameters= struct;
+Parameters.regr.LDS.height_COG.eq=@(measured_height_in_mm)-1491.6413+(1.2968*measured_height_in_mm);
+Parameters.masses.loads.axle_load_front.RWD = 55;                %Axle load distribution for RWD vehicles in percent
 
 %%----------------------------------------------------Characteristic Path----------------------------------------------------
 %looks like: '02_Characteristics_Diagrams'
 Parameters.LDS.char_path = '02_Characteristics_Diagrams'; %Path where engine characteristics are stored within the folder /lds_paumani/03_LDS_Hefele/XXXXX
-
 
 %%--------------------------------Parameters for calculation of vehicle resistance force--------------------------------
 Parameters.LDS.c_d                      =   0.258;      %drag coefficient in [-]. Source [1]
@@ -124,16 +127,6 @@ Parameters.LDS.overload_factor.PSM      =   2;                              %ove
 Parameters.LDS.overload_duration.ASM    =   30;                             %overload duration ASM in s. Source [9]
 Parameters.LDS.overload_duration.PSM    =   30;                             %overload duration PSM in s. Source [9]
 
-%%---------------------------------Parameters for calculation of the slope requirements---------------------------------
-Parameters.LDS.trailer_factor.highfloor =   0.98;                           %trailer factor for highfloor vehicles. Source [10]
-Parameters.LDS.trailer_factor.flatfloor =   0.83;                           %trailer factor for flatfloor vehicles. Source [10]
-Parameters.LDS.slope_1.flatfloor        =   0;                              %slope 1 for flatfloor vehicles for max weight. Additional slot for simulation of other slopes
-Parameters.LDS.slope_1.highfloor        =   0.25;                           %slope 1 for highfloor vehicles for max weight. Additional slot for simulation of other slopes
-Parameters.LDS.slope_2.flatfloor        =   0.15;                           %slope 2 for flatfloor vehicles for max weight. Source [11]
-Parameters.LDS.slope_2.highfloor        =   0.15;                           %slope 2 for highfloor vehicles for max weight. Source [11]
-Parameters.LDS.slope_3.flatfloor        =   0.12;                           %slope 3 for flatfloor vehicles for max weight + trailer mass. Source [12]
-Parameters.LDS.slope_3.highfloor        =   0.12;                           %slope 3 for highfloor vehicles for max weight + trailer mass. Source [12]
-
 %%----------------------------------------Parameters for the simulation settings----------------------------------------
 Parameters.LDS.max_diff_to_acc          =   0.05;                            %tolerance of acceleration time in s
 Parameters.LDS.max_diff_to_max_speed    =   2;                              %tolerance of actual speed to max speed in km/h
@@ -147,5 +140,3 @@ Parameters.LDS.slope_angle_sim_acc      =   0;                              %Slo
 Parameters.LDS.torque_optimizer         =   NaN;                            %Torque optimizer if only one engine is overloaded - on/off (1/NaN)
 
 end
-
-
