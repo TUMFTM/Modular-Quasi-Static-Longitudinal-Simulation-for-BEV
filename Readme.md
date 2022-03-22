@@ -1,12 +1,12 @@
 <h1><a ...section link code />A Modular Quasi Static Longitudinal Simulation for BEV</h1>
 <h2><a ...section link code />Developers:</h2>
-Adrian König (Institute for Automotive Technology, Technical University of Munich): Simulation validation, Code detailing, Code documentation
-Lorenzo Nicoletti (Institute for Automotive Technology, Technical University of Munich): Creation of first simulation code, Code detailing, Code documentation
-Korbinian Moller (Technical University of Munich): Simulation validation, Code detailing, Code documentation
+- Adrian König (Institute for Automotive Technology, Technical University of Munich): Simulation validation, Code detailing, Code documentation
+- Lorenzo Nicoletti (Institute for Automotive Technology, Technical University of Munich): Creation of first simulation code, Code detailing, Code documentation
+- Korbinian Moller (Technical University of Munich): Simulation validation, Code detailing, Code documentation
 
 <h2><a ...section link code />Structure of the Longitudinal Dynamic Simulation (LDS):</h2>
 
-The structure of the LDS is shown in the figure underneath (based on [[1]](#1))
+The structure of the LDS is shown in the figure underneath, based on [[1]](#1):
 
 <div align="center">
 <img src="/04_Visualization/LDS_structure.svg?raw=true"
@@ -22,15 +22,26 @@ In step 1, the machine torque is scaled until the desired acceleration time is r
 
 Subsequently, a top speed simulation (step 2 in the Figure) is employed to select the maximum machine rotational speed depending on a given transmission ratio and vehicle speed. If the previously calculated (step 1 in the Figure) torque curve does not extend up to the required rotational speed, the algorithm scales the curve accordingly. 
 
-Finally in the last step an energy consumption conducted. For this scope a test cycle (which has to be selected by the user) is used. Based on the speed and profile of the test cycle the losses of the vehicle are calculated and ultimatively its consumption dervied. For the machine losses, an efficiency map database is created with the design software developed by Kalt et al. [[2]](#2)). The simulation selects the efficiency map from the database that best approximates the torque curve derived in steps 1 and 2. The gearbox, battery, and power electronics losses are modeled with constant efficiencies. 
+Finally in the last step an energy consumption conducted. For this scope a test cycle (which has to be selected by the user) is used. Based on the speed and profile of the test cycle the losses of the vehicle are calculated and ultimatively its consumption dervied. For the machine losses, an efficiency map database is created with the design software developed by Kalt et al. [[2]](#2). The simulation selects the efficiency map from the database that best approximates the torque curve derived in steps 1 and 2. The gearbox, battery, and power electronics losses are modeled with constant efficiencies. 
 
 The LDS outputs include the electric machine requirements (maximum torque Tmach,max and rotational speed nmach,max), the vehicle consumption in the test cycle, and the required battery energy to reach the target range.
 
+<h2><a ...section link code />Implementation:</h2>
+
+This section describes the Implementation of the LDS.  The LDS can be simply started by calling [```Main_LDS.m```](../Main_LDS.m). The description of the LDS implementation bases on the structure of ```Main_LDS.m```.
+ 
+
+<h3><a ...section link code />Preprocessing:</h3>
+In the preprocessing the to-be-simulated vehicle is initialized. To initialize the vehicle you can use one of the initialization scripts contained in HERE LINK. Otgherwise you can also create your own script based on the scripts contained in HERE LINK. After this step, the structures  ```Main_LDS.m``` and ```Main_LDS.m``` are created:
+
+- Struct ```vehicle```: This struct is used to store the results of the LDS. It is created and initialized by the initialization scripts and is filled with results during the calculation. The ```vehicle``` struct is also improtant for the postprocessing: for example, the results of the LDS can be visualized by calling the following line of code: ```plot_result_LDS(vehicle)```
+- Struct ```Parameters```: Differently from the ```vehicle``` struct, this struct is not updated during the calculation. It contains empirical models as well as different constant values which are required for the calculation (such as gearbox, battery, and power electronic efficiencies).
+
+<h3><a ...section link code />Load cycles, efficiency map, and calculate missing inputs:</h3>
+This section is divided in four main steps:
+- The function 
 
 
-
-In the Preprocessing phase, the inputs of the LDS have to be initialized. The initialization follows the followingg steps:
-- Initialize the vehicle: This step is conducted in HERE LINK. To initialize the vehicle you can use one of the initialize script contained in XX or create your own initialization script
 - Load the cycle: This tep is conducted at the following line of Main_LDS. Based on the chosen consumption cycle (will be exmplained later) the speed time profile is loaded from the  [```03_Drive_Cycle```](../03_Drive_Cycle/) folder.
 - 
 - 
