@@ -12,6 +12,7 @@ The structure of the LDS is shown in the figure underneath (based on [[1]](#1))
 <img src="/04_Visualization/LDS_structure.svg?raw=true"
  alt="Structure of the LDS"
 title="Structure of the LDS"
+width = "555px"
 />
 </div>
 
