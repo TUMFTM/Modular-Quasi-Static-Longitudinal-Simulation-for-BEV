@@ -31,19 +31,19 @@ The LDS outputs include the electric machine requirements (maximum torque Tmach,
 
 <h2><a ...section link code />Implementation:</h2>
 
-This section describes the Implementation of the LDS.  The LDS can be simply started by calling [```Main_LDS.m```](/Main_LDS.m). The description of the LDS implementation bases on the structure of ```Main_LDS.m```.
+This section describes the Implementation of the LDS.  The LDS can be simply started by calling [```Main_LDS.m```](/Main_LDS.m). The description of the LDS implementation is based on the structure of ```Main_LDS.m```.
  
 
 <h3><a ...section link code />Preprocessing:</h3>
 
-In the preprocessing the to-be-simulated vehicle is initialized. To initialize the vehicle you can use one of the initialization scripts contained in [```initialize_vehicle```](/01_Functions/initialize_functions/initialize_vehicle/). Otgherwise you can also create your own script based on the scripts contained in ```initialize_vehicle```. After this step, the structures  ```vehicle``` and ```Parameters``` are created:
+In the preprocessing, the to-be-simulated vehicle is initialized. To initialize the vehicle you can use one of the initialization scripts contained in [```initialize_vehicle```](/01_Functions/initialize_functions/initialize_vehicle/). Otherwise you can also create your own script based on the scripts contained in ```initialize_vehicle```. After this step, the structures  ```vehicle``` and ```Parameters``` are created:
 
 - Struct ```vehicle```: This struct contains the input given by the user and will also be used to store the results of the LDS. It is created and initialized by the initialization scripts and is filled with results during the calculation. The ```vehicle``` struct is also important for the postprocessing: for example, the results of the LDS can be visualized by calling the following line of code: ```plot_result_LDS(vehicle)```
 - Struct ```Parameters```: Differently from the ```vehicle``` struct, this struct is not updated during the calculation. It contains empirical models as well as different constant values which are required for the calculation (such as gearbox, battery, and power electronic efficiencies).
 
 <h3><a ...section link code />Load cycles, efficiency map, and calculate missing inputs:</h3>
 
-This section is divided in four main steps:
+This section is divided into four main steps:
 - The function [```load_cycle.m```](/01_Functions/helper_functions/load_cycle.m) loads the chosen test cycle. The speed-time profile of the test cycle is appended to the structure ```vehicle``` and will be used in the consumption simulation.
 - The function [```initialize_topology.m```](/01_Functions/initialize_functions/initialize_topology/initialize_topology.m) adds new fields to the vehicle struct. These fields store the type, postion and number of machines and gearbox. The machines and gearboxes are initialized based on the chosen topology.
 - The function [```calc_missing_inputs.m```](/01_Functions/calc_functions/calc_missing_inputs.m) calculates further parameters required for the LDS using the user inputs.
@@ -51,20 +51,20 @@ This section is divided in four main steps:
 
 <h3><a ...section link code />Acceleration simulation:</h3>
 
-The acceleration simulation is conducted by the script [```acceleration_sim.m```](/01_Functions/simulation_functions/acceleration_sim.m). This function will iteratively adjust the torque of the electric machine until it is possible to reach the required vehicle acceleration time. Precise documentation to this function is contained in [[3]](#3).
+The acceleration simulation is conducted by the script [```acceleration_sim.m```](/01_Functions/simulation_functions/acceleration_sim.m). This function will iteratively adjust the torque of the electric machine until it is possible to reach the required vehicle acceleration time. Precise documentation of this function is contained in [[3]](#3).
 
 <h3><a ...section link code />Top speed simulation:</h3>
 
-The top speed simulation is conducted by the script [```max_speed_sim.m```](/01_Functions/simulation_functions/max_speed_sim.m). This function will iteratively adjust the machine rotational speed until the desired vehicle speed can be reached. Precise documentation to this function is contained in [[3]](#3).
+The top speed simulation is conducted by the script [```max_speed_sim.m```](/01_Functions/simulation_functions/max_speed_sim.m). This function will iteratively adjust the machine rotational speed until the desired vehicle speed can be reached. Precise documentation of this function is contained in [[3]](#3).
 
 <h3><a ...section link code />Consumption simulation:</h3>
 
-The consumption simulation is conducted by the script [```energy_consumption_sim.m```](/01_Functions/simulation_functions/energy_consumption_sim.m). This function will iteratively use the derive machine characteristics (torque and rotational speed) and simulate the machine efficiency in the chosen test cycle. Depending from the chosen test cycle, it may happen that the machine can fulfill the vehicle speed and acceleration requirement but is not enough powerful to be used in the cycle. If this is the case, the machine will be scaled once again to ensure that the vehicle can follow the given test cycle. 
+The consumption simulation is conducted by the script [```energy_consumption_sim.m```](/01_Functions/simulation_functions/energy_consumption_sim.m). This function will iteratively use the derived machine characteristics (torque and rotational speed) and simulate the machine efficiency in the chosen test cycle. Depending on the chosen test cycle, it may happen that the machine can fulfill the vehicle speed and acceleration requirement but is not enough powerful to be used in the cycle. If this is the case, the machine will be scaled once again to ensure that the vehicle can follow the given test cycle. 
 
 
 <h3><a ...section link code />Postprocessing:</h3>
 
-The results of the LDS can be represented as plot by calling the function [```plot_result_LDS.m```](../04_Visualization/plot_result_LDS.m)
+The results of the LDS can be plotted by calling the function [```plot_result_LDS.m```](../04_Visualization/plot_result_LDS.m)
 
 <h2><a ...section link code />References:</h2>
 
