@@ -1,5 +1,6 @@
 <h1><a ...section link code />A Modular Quasi Static Longitudinal Simulation for BEV</h1>
 <h2><a ...section link code />Developers:</h2>
+
 - Adrian König (Institute for Automotive Technology, Technical University of Munich): Simulation validation, Code detailing, Code documentation
 - Lorenzo Nicoletti (Institute for Automotive Technology, Technical University of Munich): Creation of first simulation code, Code detailing, Code documentation
 - Korbinian Moller (Technical University of Munich): Simulation validation, Code detailing, Code documentation
@@ -9,14 +10,15 @@
 The structure of the LDS is shown in the figure underneath, based on [[1]](#1):
 
 <div align="center">
-<img src="/04_Visualization/LDS_structure.svg?raw=true"
+<img src="/04_Visualization/LDS_structure.svg"
  alt="Structure of the LDS"
 title="Structure of the LDS"
-width = "555px"
+width = "1000px"
 />
 </div>
 
-The LDS inputs include performance requirements (maximum vehicle speed, acceleration time t0􀀀100, target range, and gearbox transmission ratio), parameters for estimating vehicle losses (external dimensions and vehicle mass), and topology specifications (number, type, and position of the electric machines). Furthermore, for estimating the vehicle range, a test cycle must be selected. It is possible to choose among several driving cycles such as the New European Driving Cycle (NEDC) and the Worldwide Harmonized Light Vehicles Test Procedure (WLTP).
+
+The LDS inputs include performance requirements (maximum vehicle speed, acceleration time, target range, and gearbox transmission ratio), parameters for estimating vehicle losses (external dimensions and vehicle mass), and topology specifications (number, type, and position of the electric machines). Furthermore, for estimating the vehicle range, a test cycle must be selected. It is possible to choose among several driving cycles such as the New European Driving Cycle (NEDC) and the Worldwide Harmonized Light Vehicles Test Procedure (WLTP).
 
 In step 1, the machine torque is scaled until the desired acceleration time is reached. This step also derives the torque curve, which depicts the profile of the maximum torque as a function of its rotational speed. 
 
@@ -28,53 +30,43 @@ The LDS outputs include the electric machine requirements (maximum torque Tmach,
 
 <h2><a ...section link code />Implementation:</h2>
 
-This section describes the Implementation of the LDS.  The LDS can be simply started by calling [```Main_LDS.m```](../Main_LDS.m). The description of the LDS implementation bases on the structure of ```Main_LDS.m```.
+This section describes the Implementation of the LDS.  The LDS can be simply started by calling [```Main_LDS.m```](/Main_LDS.m). The description of the LDS implementation bases on the structure of ```Main_LDS.m```.
  
 
 <h3><a ...section link code />Preprocessing:</h3>
-In the preprocessing the to-be-simulated vehicle is initialized. To initialize the vehicle you can use one of the initialization scripts contained in HERE LINK. Otgherwise you can also create your own script based on the scripts contained in HERE LINK. After this step, the structures  ```Main_LDS.m``` and ```Main_LDS.m``` are created:
+In the preprocessing the to-be-simulated vehicle is initialized. To initialize the vehicle you can use one of the initialization scripts contained in HERE LINK. Otgherwise you can also create your own script based on the scripts contained in HERE LINK. After this step, the structures  ```vehicle``` and ```Parameters``` are created:
 
-- Struct ```vehicle```: This struct is used to store the results of the LDS. It is created and initialized by the initialization scripts and is filled with results during the calculation. The ```vehicle``` struct is also improtant for the postprocessing: for example, the results of the LDS can be visualized by calling the following line of code: ```plot_result_LDS(vehicle)```
+- Struct ```vehicle```: This struct contains the input given by the user and will also be used to store the results of the LDS. It is created and initialized by the initialization scripts and is filled with results during the calculation. The ```vehicle``` struct is also important for the postprocessing: for example, the results of the LDS can be visualized by calling the following line of code: ```plot_result_LDS(vehicle)```
 - Struct ```Parameters```: Differently from the ```vehicle``` struct, this struct is not updated during the calculation. It contains empirical models as well as different constant values which are required for the calculation (such as gearbox, battery, and power electronic efficiencies).
 
 <h3><a ...section link code />Load cycles, efficiency map, and calculate missing inputs:</h3>
 This section is divided in four main steps:
-- The function 
+- The function [```load_cycle.m```](/01_Functions/helper_functions/load_cycle.m) loads the chosen test cycle. The speed-time profile of the test cycle is appended to the structure ```vehicle``` and will be used in the consumption simulation.
+- The function HERE LINK adds new fields to the vehicle struct. These fields store the type, postion and number of machines and gearbox. The machines and gearboxes are initialized based on the chosen topology.
+- The function [```calc_missing_inputs.m```](/01_Functions/calc_functions/calc_missing_inputs.m) calculates further parameters required for the LDS using the user inputs.
+- The function [```load_engine.m```](/01_Functions/engine_functions/load_engine.m) loads a basis machine efficiency map which will be used as starting point for the consumption simulation.
+
+<h3><a ...section link code />Acceleration simulation:</h3>
+
+The acceleration simulation is conducted by the script [```acceleration_sim.m```](/01_Functions/simulation_functions/acceleration_sim.m). This function will iteratively adjust the torque of the electric machine until it is possible to reach the required vehicle acceleration time. Precise documentation to this function is contained in [[3]](#3).
+
+<h3><a ...section link code />Top speed simulation:</h3>
+
+The top speed simulation is conducted by the script [```acceleration_sim.m```](/01_Functions/simulation_functions/max_speed_sim.m). This function will iteratively adjust the machine rotational speed until the desired vehicle speed can be reached. Precise documentation to this function is contained in [[3]](#3).
+
+<h3><a ...section link code />Consumption simulation:</h3>
+
+The consumption simulation is conducted by the script [```energy_consumption_sim.m```](/01_Functions/simulation_functions/energy_consumption_sim.m). This function will iteratively use the derive machine characteristics (torque and rotational speed) and simulate the machine efficiency in the chosen test cycle. Depending from the chosen test cycle, it may happen that the machine can fulfill the vehicle speed and acceleration requirement but is not enough powerful to be used in the cycle. If this is the case, the machine will be scaled once again to ensure that the vehicle can follow the given test cycle. 
 
 
-- Load the cycle: This tep is conducted at the following line of Main_LDS. Based on the chosen consumption cycle (will be exmplained later) the speed time profile is loaded from the  [```03_Drive_Cycle```](../03_Drive_Cycle/) folder.
-- 
-- 
+<h3><a ...section link code />Postprocessing:</h3>
 
-This calculation step is implemented in the script [```acceleration_sim```](../01_Functions/simulation_functions/acceleration_sim.m)
+The results of the LDS can be represented as plot by calling the function [```plot_result_LDS.m```](../04_Visualization/plot_result_LDS.m)
 
-------- An Open-Source Modular Quasi-Static Longitudinal Simulation for Full Electric Vehicles ------
-Authors: Adrian König, Lorenzo Nicoletti, Korbinian Moller
-Link: https://ieeexplore.ieee.org/document/9242981
+<h2><a ...section link code />References:</h2>
 
-This is the readme file for MATLAB longitudinal dynamics simulation. This simulation calculates the motor torque, motor power and energy consumption within a given driving cycle based on the given input parameters. 
-
-To start the simulation you only have to call the function main.m. This function coordinates all further subfunctions. In the first function (initialize_inputparameters_xxx) different preset vehicles can be selected. These can easily be found with the tab key (press behind the last underscore). Furthermore, all parameters can be changed in the options. These are explained separately in the function. 
-
-The output is given as a plot. Furthermore, all calculated parameters are output in the MATLAB struct. There information about the acceleration simulation (sim_acc), the speed simulation (max_speed_sim), the consumption simulation (sim_cons) as well as data about the engine (front and rear axle) and the transmission (front and rear axle) are stored. 
-
-As an additional feature, a dynamic plot is available which illustrates the cycle and all operating points. Additionally, several gears can be simulated. For this purpose, several transmission ratios only have to be entered as line vectors in the gearbox input. 
-
-For a four-wheel drive, the corresponding topologies must be defined. These are assigned according to the scheme (front wheel)_(rear wheel). X stands for an unoccupied axle. One motor with one gear per axle is called GM, two motors with two gears per axle are called 2G2M. Combinations are also possible. GM_2G2M thus designates a vehicle with one engine on the front axle and two engines on the rear axle. GM_X denotes for example a front wheel drive. 
-
-Steps to execution:
-- Select vehicle
-- change parameters if required
-- Start simulation
-- Evaluate results
-
-
-
-(c) 2020
-
-
-## References
 <a id="1">[1]</a> Lorenzo Nicoletti, "Parametric Modeling of Battery Electric Vehicles in the Early Development Phase", Ph.D. Thesis, Technical University of Munich, Institute of Automotive Technology, 2022.
 
 <a id="2">[2]</a> Svenja Kalt et al., „Electric Machine Design Tool for Permanent Magnet Synchronous Machines and Induction Machines,“ Machines, vol. 8, no. 1, p. 15, 2020, DOI: 10.3390/machines8010015.
 
+<a id="3">[3]</a> Adrian König, Lorenzo Nicoletti et. al. „An Open-Source Modular Quasi-Static Longitudinal Simulation for Full Electric Vehicles,“ in 15th International Conference on Ecological Vehicles and Renewable Energies, Monte-Carlo, Monaco, 2020, pp. 1–9, DOI: 10.1109/EVER48776.2020.9242981.
