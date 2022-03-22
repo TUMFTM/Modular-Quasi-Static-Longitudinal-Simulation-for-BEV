@@ -1,4 +1,4 @@
-% Designed by: Lorenzo Nicoletti (FTM, Technical University of Munich)
+% Designed by: Adrian König (FTM, Technical University of Munich), Lorenzo Nicoletti (FTM, Technical University of Munich), Korbinian Moller
 %-------------
 % Finalized on: 22.03.2022
 % ------------

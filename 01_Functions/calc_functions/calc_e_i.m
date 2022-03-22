@@ -1,5 +1,5 @@
 function veh=calc_e_i(veh,ParLDS)
-% Designed by: Lorenzo Nicoletti (FTM, Technical University of Munich), Korbinian Moller
+% Designed by: Adrian König (FTM, Technical University of Munich), Lorenzo Nicoletti (FTM, Technical University of Munich), Korbinian Moller
 %-------------
 % Created on: 06.01.2022
 % ------------

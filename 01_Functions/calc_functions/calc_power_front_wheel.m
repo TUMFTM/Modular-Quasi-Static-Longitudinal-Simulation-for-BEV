@@ -1,5 +1,5 @@
 function [vehicle] = calc_power_front_wheel(vehicle, Par)
-% Designed by: Lorenzo Nicoletti (FTM, Technical University of Munich), Korbinian Moller, Ruben Hefele
+% Designed by: Adrian König (FTM, Technical University of Munich), Lorenzo Nicoletti (FTM, Technical University of Munich), Korbinian Moller
 %-------------
 % Created on: 06.01.2022
 % ------------

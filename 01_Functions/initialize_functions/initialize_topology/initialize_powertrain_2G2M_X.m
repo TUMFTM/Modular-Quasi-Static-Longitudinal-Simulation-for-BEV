@@ -1,5 +1,5 @@
 function [v] = initialize_powertrain_2G2M_X(v, Par)
-% Designed by: Lorenzo Nicoletti (FTM, Technical University of Munich), Korbinian Moller, Ruben Hefele
+% Designed by: Adrian König (FTM, Technical University of Munich), Lorenzo Nicoletti (FTM, Technical University of Munich), Korbinian Moller
 %-------------
 % Created on: 06.01.2022
 % ------------

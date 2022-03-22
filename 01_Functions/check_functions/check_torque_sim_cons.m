@@ -1,5 +1,5 @@
 function [check_torque_output,veh] = check_torque_sim_cons(veh)
-% Designed by: Lorenzo Nicoletti (FTM, Technical University of Munich), Korbinian Moller
+% Designed by: Adrian König (FTM, Technical University of Munich), Lorenzo Nicoletti (FTM, Technical University of Munich), Korbinian Moller
 %-------------
 % Created on: 06.01.2022
 % ------------

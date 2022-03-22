@@ -1,5 +1,5 @@
 function  [veh]=check_overload(veh,Par,T_mot,n_mot,ax_id)
-% Designed by: Lorenzo Nicoletti (FTM, Technical University of Munich), Korbinian Moller
+% Designed by: Adrian König (FTM, Technical University of Munich), Lorenzo Nicoletti (FTM, Technical University of Munich), Korbinian Moller
 %-------------
 % Created on: 06.01.2022
 % ------------

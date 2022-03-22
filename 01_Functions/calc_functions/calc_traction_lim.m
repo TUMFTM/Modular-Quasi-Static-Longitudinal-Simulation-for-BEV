@@ -1,5 +1,5 @@
 function [traction_limit] = calc_traction_lim(vehicle, Par, F_L , alpha)
-% Designed by: Lorenzo Nicoletti (FTM, Technical University of Munich), Ruben Hefele
+% Designed by: Adrian König (FTM, Technical University of Munich), Lorenzo Nicoletti (FTM, Technical University of Munich), Korbinian Moller
 %-------------
 % Created on: 06.01.2022
 % ------------

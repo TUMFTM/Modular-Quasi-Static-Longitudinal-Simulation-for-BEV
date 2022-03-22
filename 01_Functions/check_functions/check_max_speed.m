@@ -1,5 +1,5 @@
 function veh = check_max_speed(veh,Par)
-% Designed by: Lorenzo Nicoletti (FTM, Technical University of Munich)
+% Designed by: Adrian König (FTM, Technical University of Munich), Lorenzo Nicoletti (FTM, Technical University of Munich), Korbinian Moller
 %-------------
 % Created on: 06.01.2022
 % ------------

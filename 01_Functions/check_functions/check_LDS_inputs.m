@@ -1,5 +1,5 @@
 function v=check_LDS_inputs(v)
-% Designed by: Lorenzo Nicoletti (FTM, Technical University of Munich), Peter Koehler
+% Designed by: Adrian König (FTM, Technical University of Munich), Lorenzo Nicoletti (FTM, Technical University of Munich), Korbinian Moller
 %-------------
 % Created on: 01.03.2022
 % ------------
