@@ -5,6 +5,7 @@ Lorenzo Nicoletti (Institute for Automotive Technology, Technical University of 
 Korbinian Moller (Technical University of Munich): Simulation validation, Code detailing, Code documentation
 
 <h2><a ...section link code />Structure of the Longitudinal Dynamic Simulation (LDS):</h2>
+
 The structure of the LDS is shown in the figure underneath (based on [[1]](#1))
 
 <div align="center">
