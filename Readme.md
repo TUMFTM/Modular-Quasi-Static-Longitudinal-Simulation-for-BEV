@@ -70,3 +70,6 @@ The results of the LDS can be represented as plot by calling the function [```pl
 <a id="2">[2]</a> Svenja Kalt et al., „Electric Machine Design Tool for Permanent Magnet Synchronous Machines and Induction Machines,“ Machines, vol. 8, no. 1, p. 15, 2020, DOI: 10.3390/machines8010015.
 
 <a id="3">[3]</a> Adrian König, Lorenzo Nicoletti et. al. „An Open-Source Modular Quasi-Static Longitudinal Simulation for Full Electric Vehicles,“ in 15th International Conference on Ecological Vehicles and Renewable Energies, Monte-Carlo, Monaco, 2020, pp. 1–9, DOI: 10.1109/EVER48776.2020.9242981.
+
+
+Test
