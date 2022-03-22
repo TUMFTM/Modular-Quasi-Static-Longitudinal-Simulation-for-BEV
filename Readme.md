@@ -1,3 +1,8 @@
+
+
+# Developer
+The main developers of this simulation are: Adrian König, Lorenzo Nicoletti, and Korbinian Moller (Institute for Automotive Technology, Technical University of Munich).
+
 ------- An Open-Source Modular Quasi-Static Longitudinal Simulation for Full Electric Vehicles ------
 Authors: Adrian König, Lorenzo Nicoletti, Korbinian Moller
 Link: https://ieeexplore.ieee.org/document/9242981
