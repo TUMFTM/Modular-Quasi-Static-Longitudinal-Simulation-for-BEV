@@ -47,6 +47,8 @@ clear vehicle Parameters %clear structs from previous simulations
 [vehicle,Parameters] = initialize_inputparameters_etron55();
 
 vehicle.LDS.settings.suppress_LDS_warnings=1; %Set to 1 to suppress the LDS warnings and to 0 to show them
+vehicle.settings.suppress_LDS_warnings=1; %Set to 1 to suppress the LDS warnings and to 0 to show them
+
 vehicle.LDS.First_Run=1;
 
 %% 2) Load cycles, efficiency map, and calculate missing inputs

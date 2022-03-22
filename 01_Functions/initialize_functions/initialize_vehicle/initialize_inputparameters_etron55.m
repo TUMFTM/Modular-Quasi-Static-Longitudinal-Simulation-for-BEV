@@ -49,17 +49,13 @@ function [vehicle,Parameters] = initialize_inputparameters_etron55(vehicle)
 %% 1) Section where the user can assign the Inputparameters
 %%----------------------------------------------------Vehicle Inputs----------------------------------------------------
 vehicle.Input.topology                  =   'GM_GM';        %vehicle topology. See functions initialize powertrain
-vehicle.Input.weight_extra_equipment    =   0;              %weight of the extra equipment
-vehicle.Input.vehicle_payload           =   0;              %payload of vehicle in kg
-vehicle.Input.number_passengers         =   5;              %Number of passengers
 vehicle.Input.vehicle_empty_weight      =   2555-75;           %empty weight netto in kg (no driver)
 vehicle.Input.vehicle_sim_cons_weight   =   NaN;            %vehicle weight for energy consumption simulation (optional, otherwise NaN)
 vehicle.Input.r_tire                    =   381;            %static tire radius in mm 
-vehicle.Input.w_tire                    =   255;            %tire width in mm, (Optional, needed for e_i calculation)
+vehicle.Input.w_tire                    =   300;            %tire width in mm, (Optional, needed for e_i calculation)
 vehicle.Input.vehicle_width             =   1935;           %vehicle width in mm
 vehicle.Input.vehicle_height            =   1629;           %vehicle height in mm
 vehicle.Input.wheelbase                 =   2928;           %wheelbase in mm
-vehicle.Input.ground_clearance          =   'flatfloor';    %ground clearance (more than 200mm ==> highfloor, otherwise flatfloor)                 
 vehicle.Input.driving_cycle             =   'WLTP';         %driving cycle (cycle are in folder 04_Drive_Cycle)
 vehicle.Input.power_auxiliaries        =    NaN;               %power of auxiliary users in kW. (optional, otherwise NaN)
 
@@ -70,8 +66,8 @@ vehicle.Input.machine_type_r            =   'ASM';          %machine type rear '
 
 %%-----------------------------------------------------Motor Inputs-----------------------------------------------------
 %At least n_max or i_gearbox have to be assigned!! The non assigned values can be set to NaN
-vehicle.Input.i_gearbox_f               =  9.204;          %gear ratio front
-vehicle.Input.i_gearbox_r               =  90.08;          %gear ratio rear
+vehicle.Input.i_gearbox_f               =  9.204;         %gear ratio front
+vehicle.Input.i_gearbox_r               =  9.08;          %gear ratio rear
 
 vehicle.Input.T_max_Mot_f               =  247;         %max torque of front machine in Nm
 vehicle.Input.T_max_Mot_r               =  314;         %max torque of rear machine in Nm
@@ -88,7 +84,8 @@ vehicle.Input.weight_n = [1,1];                   %select speed weight factor pe
 vehicle.Input.weight_ratio = [1,1];               %select angular speed ratio weight factor per axle
 
 %%-------------------------------------------------Resistance (Optional-------------------------------------------------
-%If not assigned will be calculated or modeled with constant values (taken from Parameter struct)
+%If desired, the user can set this parameters, which will overwrite the
+%default parameters declared in section 2. Otherwise leave to NaN
 vehicle.Input.e_i                       =   NaN;            %e_i value (optional)
 vehicle.Input.c_r                       =   NaN;            %roll resistance coefficient, (optional)
 vehicle.Input.c_d                       =   0.28;            %air resistance coefficient, (optional)
@@ -100,10 +97,9 @@ vehicle.Input.eta_gearbox_f             =   NaN;            %efficiency of front
 %Initialize other parameters which are needed for further calculations:
 vehicle.masses.vehicle_empty_weight_EU=vehicle.Input.vehicle_empty_weight +75;  %vehicle weight with driver
 vehicle.masses.vehicle_sim_cons_weight = vehicle.Input.vehicle_sim_cons_weight;
-vehicle.masses.vehicle_max_weight=vehicle.masses.vehicle_empty_weight_EU+vehicle.Input.vehicle_payload +vehicle.Input.weight_extra_equipment+(vehicle.Input.number_passengers-1)*(75); %weight of the heaviest vehicle variant
-vehicle.dimensions.CX=[];
+vehicle.dimensions.CX =[];
 
-%% 2) Section where the user can change the fixed values
+%% 2) Default simulation parameters
 Parameters= struct;
 Parameters.regr.LDS.height_COG.eq=@(measured_height_in_mm)-1491.6413+(1.2968*measured_height_in_mm);
 Parameters.masses.loads.axle_load_front.RWD = 55;                %Axle load distribution for RWD vehicles in percent
