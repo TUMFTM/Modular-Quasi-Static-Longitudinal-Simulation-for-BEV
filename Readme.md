@@ -35,15 +35,17 @@ This section describes the Implementation of the LDS.  The LDS can be simply sta
  
 
 <h3><a ...section link code />Preprocessing:</h3>
-In the preprocessing the to-be-simulated vehicle is initialized. To initialize the vehicle you can use one of the initialization scripts contained in HERE LINK. Otgherwise you can also create your own script based on the scripts contained in HERE LINK. After this step, the structures  ```vehicle``` and ```Parameters``` are created:
+
+In the preprocessing the to-be-simulated vehicle is initialized. To initialize the vehicle you can use one of the initialization scripts contained in [```initialize_vehicle```](/01_Functions/initialize_functions/initialize_vehicle/). Otgherwise you can also create your own script based on the scripts contained in ```initialize_vehicle```. After this step, the structures  ```vehicle``` and ```Parameters``` are created:
 
 - Struct ```vehicle```: This struct contains the input given by the user and will also be used to store the results of the LDS. It is created and initialized by the initialization scripts and is filled with results during the calculation. The ```vehicle``` struct is also important for the postprocessing: for example, the results of the LDS can be visualized by calling the following line of code: ```plot_result_LDS(vehicle)```
 - Struct ```Parameters```: Differently from the ```vehicle``` struct, this struct is not updated during the calculation. It contains empirical models as well as different constant values which are required for the calculation (such as gearbox, battery, and power electronic efficiencies).
 
 <h3><a ...section link code />Load cycles, efficiency map, and calculate missing inputs:</h3>
+
 This section is divided in four main steps:
 - The function [```load_cycle.m```](/01_Functions/helper_functions/load_cycle.m) loads the chosen test cycle. The speed-time profile of the test cycle is appended to the structure ```vehicle``` and will be used in the consumption simulation.
-- The function HERE LINK adds new fields to the vehicle struct. These fields store the type, postion and number of machines and gearbox. The machines and gearboxes are initialized based on the chosen topology.
+- The function [```initialize_topology.m```](/01_Functions/initialize_functions/initialize_topology/initialize_topology.m) adds new fields to the vehicle struct. These fields store the type, postion and number of machines and gearbox. The machines and gearboxes are initialized based on the chosen topology.
 - The function [```calc_missing_inputs.m```](/01_Functions/calc_functions/calc_missing_inputs.m) calculates further parameters required for the LDS using the user inputs.
 - The function [```load_engine.m```](/01_Functions/engine_functions/load_engine.m) loads a basis machine efficiency map which will be used as starting point for the consumption simulation.
 
@@ -53,7 +55,7 @@ The acceleration simulation is conducted by the script [```acceleration_sim.m```
 
 <h3><a ...section link code />Top speed simulation:</h3>
 
-The top speed simulation is conducted by the script [```acceleration_sim.m```](/01_Functions/simulation_functions/max_speed_sim.m). This function will iteratively adjust the machine rotational speed until the desired vehicle speed can be reached. Precise documentation to this function is contained in [[3]](#3).
+The top speed simulation is conducted by the script [```max_speed_sim.m```](/01_Functions/simulation_functions/max_speed_sim.m). This function will iteratively adjust the machine rotational speed until the desired vehicle speed can be reached. Precise documentation to this function is contained in [[3]](#3).
 
 <h3><a ...section link code />Consumption simulation:</h3>
 
