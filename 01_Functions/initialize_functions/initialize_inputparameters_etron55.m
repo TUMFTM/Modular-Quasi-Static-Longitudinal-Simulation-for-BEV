@@ -70,8 +70,8 @@ vehicle.Input.machine_type_r            =   'ASM';          %machine type rear '
 
 %%-----------------------------------------------------Motor Inputs-----------------------------------------------------
 %At least n_max or i_gearbox have to be assigned!! The non assigned values can be set to NaN
-vehicle.Input.i_gearbox_f               =   [9.204];          %gear ratio front
-vehicle.Input.i_gearbox_r               =   [9.08];         %gear ratio rear
+vehicle.Input.i_gearbox_f               =  9.204;          %gear ratio front
+vehicle.Input.i_gearbox_r               =  90.08;          %gear ratio rear
 
 vehicle.Input.T_max_Mot_f               =  247;         %max torque of front machine in Nm
 vehicle.Input.T_max_Mot_r               =  314;         %max torque of rear machine in Nm
