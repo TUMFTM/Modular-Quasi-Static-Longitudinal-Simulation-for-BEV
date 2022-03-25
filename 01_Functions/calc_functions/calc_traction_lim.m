@@ -5,7 +5,9 @@ function [traction_limit] = calc_traction_lim(vehicle, Par, F_L , alpha)
 % ------------
 % Version: Matlab2020b
 %-------------
-% Description: This function determines the max. acceleration due to the traction limit
+% Description: This function calculates the maximum achievable drive force between tires 
+%              and asphalt. From the maximum achievable drive force it further derives 
+%              the maximum achievable vehicle acceleration.
 % ------------
 % Sources: More information regarding the implementation of the LDS functions is available at:
 %          [1] R. Hefele, „Implementierung einer MATLAB Längsdynamiksimulation für Elektrofahrzeuge,“Semester thesis, Institute of Automotive Technology, Technical University of Munich, Munich, 2019.
