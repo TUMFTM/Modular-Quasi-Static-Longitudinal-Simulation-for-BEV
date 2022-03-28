@@ -19,10 +19,9 @@
 % ------------
 % Input: vehicle: The vehicle structure -> Stores the calculated component volumes and masses
 %        Parameters: The Parameters structure -> Stores the constant values and regressions for volume and mass models
-%        This inputs are initialized by the scripts
-%        'initialize_input_parameters_XXX' it is possible to select
-%        different scripts to simulate different vehicle. These scripts are
-%        contained in the folder 03_LDS/01_Function/initialize_functions
+%        This inputs are initialized by the scripts 'initialize_input_parameters_XXX' it is possible to select
+%        different scripts to simulate different vehicle. These scripts are contained in the folder:
+%        03_LDS/01_Functions/initialize_functions/initialize_vehicle
 %------------
 % Output: The vehicle structure updated with:
 %         -the vehicle consumption

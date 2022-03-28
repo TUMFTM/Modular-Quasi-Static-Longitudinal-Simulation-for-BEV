@@ -111,7 +111,7 @@ Parameters.LDS.char_path = '02_Characteristics_Diagrams'; %Path where engine cha
 %%--------------------------------Parameters for calculation of vehicle resistance force--------------------------------
 Parameters.LDS.c_d                      =   0.258;      %drag coefficient in [-]. Source [1]
 Parameters.LDS.c_r                      =   0.009;      %roll resistance coefficient in [-]. Source [2]
-Parameters.LDS.e_i                      =   1.08;       %fix e_i value (used only if there are no tire values) in [-]. Source [3]
+Parameters.LDS.e_i                      =   1.04;       %Realistic value fopr e_i
 Parameters.LDS.g                        =   9.81;       %gravitational acceleration in m/s^2
 Parameters.LDS.rho_L                    =   1.20;       %air density in kg/m^3
 Parameters.LDS.mue_max                  =   1.15;       %driving traction coefficient (wheel-asphalt) in [-]. Source [3]
@@ -122,10 +122,6 @@ Parameters.LDS.i_differential           =   1;          %gear ratio of different
 Parameters.LDS.eta_differential         =   0.97;      %efficiency of differential in [-]. Source [5]
 Parameters.LDS.eta_gearbox              =   0.97;       %efficiency of gearbox in [-]. Source [6]
 Parameters.LDS.correction_gearbox       =   0.9142;       %correction factor for gear ratio (for electric vehicles) in [-]. Source [3]
-
-%-------------------------------------------Parameters for calculation of e_i-------------------------------------------
-Parameters.LDS.inertia.ASM              =   0.0555;                         %inertia ASM + gearbox in kg m^2. Source [3]
-Parameters.LDS.inertia.PSM              =   0.0342;                         %inertia PSM + gearbox in kg m^2. Source [3]
 
 %----------------------------Parameters for efficiency calculation foe E-machine and battery----------------------------
 Parameters.LDS.eta_battery              =   0.92;                              %fix efficiency of battery in [-]. Source [8] 0.92

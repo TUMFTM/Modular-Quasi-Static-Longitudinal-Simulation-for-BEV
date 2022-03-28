@@ -53,7 +53,7 @@ if acc_time_is_stf > vehicle.LDS.settings.t_sim_max_acc || ~isnan(vehicle.LDS.si
     %if acceleration difference is smaller or higher than tolerance motor torque has to be adapted
     while acc_delta > max_diff_to_acc || acc_delta < (-max_diff_to_acc) 
 
-        % Traction limit is reached in at least 80% of the timesteps --> required acceleration time is too short, increase required time in input parameters
+        % Traction limit is reached in at least 80% of the timesteps --> required acceleration time is too low, increase required time in input parameters
         if acc_delta >= 0 && sum(vehicle.LDS.sim_acc.a_limited == vehicle.LDS.sim_acc.traction_lim) > 0.8 * numel(vehicle.LDS.sim_acc.traction_lim)
             
             vehicle.LDS.sim_acc.traction_limit_reached_rel_timesteps = sum(vehicle.LDS.sim_acc.a_limited == vehicle.LDS.sim_acc.traction_lim) / numel(vehicle.LDS.sim_acc.traction_lim); % relative count of times where the traction limit is reached

@@ -63,7 +63,6 @@ end
 v.LDS.MOTOR{1}.type              = v.Input.machine_type_f;                              % ASM or PSM
 v.LDS.MOTOR{1}.T_max             = v.Input.T_max_Mot_f;                                 % machine torque in Nm
 v.LDS.MOTOR{1}.quantity          = 2;                                                   % quantity of motors on front axis
-v.LDS.MOTOR{1}.J_M               = Par.LDS.inertia.(v.LDS.MOTOR{1}.type);               % inertia of motor and gearbox in kg m^2
 v.LDS.MOTOR{1}.overload_factor   = Par.LDS.overload_factor.(v.LDS.MOTOR{1}.type);       % overload factor motor
 v.LDS.MOTOR{1}.overload_duration = Par.LDS.overload_duration.(v.LDS.MOTOR{1}.type);     %overload duration motor
 
@@ -91,7 +90,6 @@ end
 v.LDS.MOTOR{2}.type              = v.Input.machine_type_r;                              % ASM or PSM
 v.LDS.MOTOR{2}.T_max             = v.Input.T_max_Mot_r;                                 % machine torque in Nm
 v.LDS.MOTOR{2}.quantity          = 1;                                                   % quantity of motors on rear axis
-v.LDS.MOTOR{2}.J_M               = Par.LDS.inertia.(v.LDS.MOTOR{2}.type);               % inertia of motor and gearbox in kg m^2
 v.LDS.MOTOR{2}.overload_factor   = Par.LDS.overload_factor.(v.LDS.MOTOR{2}.type);       % overload factor motor
 v.LDS.MOTOR{2}.overload_duration = Par.LDS.overload_duration.(v.LDS.MOTOR{2}.type);     %overload duration motor
 end
